@@ -2,7 +2,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:firebase_flutter_life/Services/firebase_service.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:flutter_svg/svg.dart';
 import 'package:path_provider/path_provider.dart';
@@ -21,6 +24,7 @@ class TestRecord extends StatefulWidget {
 
 class _TestRecordState extends State<TestRecord> with TickerProviderStateMixin {
   AnimationController controller;
+  final _formKey = GlobalKey<FormState>();
 
   String get timerString {
     Duration duration = controller.duration * controller.value;
@@ -117,7 +121,7 @@ class _TestRecordState extends State<TestRecord> with TickerProviderStateMixin {
   int i = 0;
 
   Future<String> getFilePath() async {
-    Directory storageDirectory = await getApplicationDocumentsDirectory();
+    Directory storageDirectory = await getTemporaryDirectory();
     String sdPath = storageDirectory.path + "/${uuid.v4().toString()}";
     var d = Directory(sdPath);
     if (!d.existsSync()) {
@@ -150,38 +154,42 @@ class _TestRecordState extends State<TestRecord> with TickerProviderStateMixin {
         SizedBox(
           height: 10,
         ),
-             FlatButton(
-                onPressed: () {
-                    return Alert(
-                      context: context,
-                      title: widget.topic,
-                      buttons: [
-                        DialogButton(
-                          child: Text(
-                            "Submit Lesson",
-                            style: TextStyle(color: Colors.white, fontSize: 20),
-                          ),
-                          onPressed: () => Navigator.pop(context),
-                          gradient: LinearGradient(
-                            colors: <Color>[
-                              Colors.green[200],
-                              Colors.lightBlue[500],
-                            ],
-                          ),
-                        ),
-                      ],
-                      content: Form(
-                        child: Column(
-                          children: <Widget>[
-                            TextFormField(
-                              decoration:
-                                  InputDecoration(labelText: "Lesson Title"),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ).show();
+        FlatButton(
+          onPressed: () {
+            return Alert(
+              context: context,
+              title: widget.topic,
+              buttons: [
+                DialogButton(
+                  child: Text(
+                    "Submit Lesson",
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                  onPressed: () {
+                    _trySubmit();
                   },
+                  gradient: LinearGradient(
+                    colors: <Color>[
+                      Colors.green[200],
+                      Colors.lightBlue[500],
+                    ],
+                  ),
+                ),
+              ],
+              content: Form(
+                child: Column(
+                  children: <Widget>[
+                    TextFormField(
+                      decoration: InputDecoration(labelText: "Lesson Title"),
+                      onSaved: (val) {
+                        recordingTitle = val;
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ).show();
+          },
           color: Colors.blueGrey[400],
           padding: EdgeInsets.all(8.0),
           child: const Text(
@@ -194,14 +202,13 @@ class _TestRecordState extends State<TestRecord> with TickerProviderStateMixin {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          
         ),
-         SizedBox(
+        SizedBox(
           height: 10,
         ),
-            FlatButton(
+        FlatButton(
           onPressed: () {
-           Navigator.pop(context);
+            Navigator.pop(context);
           },
           color: Colors.blueGrey[400],
           padding: EdgeInsets.all(8.0),
@@ -218,6 +225,35 @@ class _TestRecordState extends State<TestRecord> with TickerProviderStateMixin {
         ),
       ],
     );
+  }
+
+  void _trySubmit() {
+    final isValid = _formKey.currentState.validate();
+    FocusScope.of(context).unfocus(); // gets rid of keyboard on submit
+    if (isValid) {
+      _formKey.currentState.save();
+    }
+    try {
+      FirebaseService().recordingUpload(
+          file: File(recordFilePath),
+          topic: widget.topic,
+          title: recordingTitle);
+    } on PlatformException catch (err) {
+      // Platform Exception throws a Firebase Error =>  "platform"
+
+      var message = "An error occured, please check credentials.";
+      if (err.message != null) {
+        message = err.message;
+      }
+      Scaffold.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } catch (err) {
+      print(err);
+    }
   }
 
   buildRecordIncompleteScreen() {

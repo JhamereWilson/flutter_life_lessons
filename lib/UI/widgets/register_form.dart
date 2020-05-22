@@ -1,4 +1,9 @@
+import 'dart:io';
+
+import 'package:firebase_flutter_life/Pickers/user_image_picker.dart';
 import 'package:firebase_flutter_life/Services/auth_service.dart';
+import 'package:firebase_flutter_life/Services/firebase_service.dart';
+import 'package:firebase_flutter_life/UI/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -14,6 +19,7 @@ class _RegisterFormState extends State<RegisterForm> {
   String email = "";
   String password = "";
   String error = "";
+  File _userImageFile;
 
   void _trySubmit() {
     final isValid = _formKey.currentState.validate();
@@ -22,7 +28,7 @@ class _RegisterFormState extends State<RegisterForm> {
       _formKey.currentState.save();
     }
     try {
-      _auth.registerWithEmailAndPassword(username, email, password);
+    FirebaseService().submitAuthForm(email, password, username, _userImageFile, context);
     } on PlatformException catch (err) {
       // Platform Exception throws a Firebase Error =>  "platform"
 
@@ -41,6 +47,10 @@ class _RegisterFormState extends State<RegisterForm> {
     }
   }
 
+    void _pickedImage(File image) {
+    _userImageFile = image;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -51,6 +61,7 @@ class _RegisterFormState extends State<RegisterForm> {
             key: _formKey,
             child: Column(
               children: <Widget>[
+              UserImagePicker(_pickedImage),
                 TextFormField(
                   validator: (val) => val.isEmpty || val.length < 6
                       ? "Username must be 6 or more characters."
@@ -105,9 +116,11 @@ class _RegisterFormState extends State<RegisterForm> {
                   ),
                 ),
                 Text(error,
-                    style: TextStyle(color: Colors.red, fontSize: 14.0)),
+                    style: TextStyle(color: Colors.red, fontSize: 14.0),),
                 FlatButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, LoginScreen.routeName);
+                  },
                   child: Text("Already Have an Account?"),
                 ),
               ],

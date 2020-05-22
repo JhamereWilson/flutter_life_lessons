@@ -22,7 +22,7 @@ class TopicsScreen extends StatelessWidget {
           child: Scaffold(
             backgroundColor: Colors.transparent,
             extendBodyBehindAppBar: true,
-            appBar: AppBar(title: Text("life lessons", style: TextStyle(color: Colors.white, fontSize: 24.0),), backgroundColor: Colors.transparent, elevation: 0),
+            appBar: AppBar(title: Text("life lessons", style: TextStyle(color: Colors.white, fontSize: 24.0),), backgroundColor: Colors.transparent, elevation: 0, centerTitle: true,),
             body: TopicSearch(),
           ),
         );

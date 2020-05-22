@@ -1,4 +1,5 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -157,7 +158,8 @@ class AppDrawer extends StatelessWidget {
                   //borderRadius: BorderRadius.circular(20.0),
                 ), 
                 onPressed: () {
-                 // BlocProvider.of<AuthenticationBloc>(context).add(LoggedOut());
+               FirebaseAuth.instance.signOut();
+               
                   print("user logged out");
                 },
               ),
