@@ -37,13 +37,13 @@ class App extends StatelessWidget {
 
 
 /* TO DO:
-          Cloud Messaging Through Firebase
           Skeleton Post Tiles ------ done
           If posts = null .... -------done
           Favorite Posts Lists
           Followers/Following
           Private Posts 
           Private Followers/Following
+          Cloud Messaging Through Firebase
 
 
 

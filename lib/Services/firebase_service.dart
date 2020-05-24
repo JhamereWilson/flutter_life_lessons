@@ -14,7 +14,7 @@ import 'package:uuid/uuid.dart';
 class FirebaseService {
 
 
-  var uuid = Uuid();
+  var postID = Uuid().v4();
 final _auth = FirebaseAuth.instance;
 
 
@@ -31,7 +31,7 @@ final _auth = FirebaseAuth.instance;
     final storageReference = FirebaseStorage.instance
         .ref()
         .child("recordings").child(topic)
-        .child(uuid.v4());
+        .child(postID);
     final uploadTask = storageReference.putFile(
         file, StorageMetadata(contentType: "audio/mp3"));
     final snapshot = await uploadTask.onComplete;
@@ -49,10 +49,11 @@ final _auth = FirebaseAuth.instance;
     final userData = await Firestore.instance.collection("users").document(user.uid).get();
     await Firestore.instance
     .collection("posts")
-    .document(uuid.v4())
+    .document(postID)
     .setData({
       "title" : title,
       "topic" : topic,
+      "postID": postID,
       "userID": user.uid,
       "recordingURL": downloadUrl.toString(),
       "username": userData["username"],
