@@ -1,15 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_flutter_life/Data/posts_repository.dart';
+import 'package:firebase_flutter_life/Data/user_repository.dart';
 import 'package:firebase_flutter_life/Models/models.dart';
 import 'package:firebase_flutter_life/Models/post_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class MyPublicBookScreen extends StatefulWidget {
-  final User currentUser;
+ final User currentUser;
 
   const MyPublicBookScreen({Key key, this.currentUser}) : super(key: key);
+
+ 
 
   @override
   _MyPublicBookScreenState createState() => _MyPublicBookScreenState();
@@ -25,15 +28,17 @@ class _MyPublicBookScreenState extends State<MyPublicBookScreen> {
   }
 
   getTimeline() async {
+    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
     QuerySnapshot snapshot = await PostRepository()
-        .publicPostsRef
-        .where("uid", isEqualTo: widget.currentUser.userID)
+        .postsRef
+        .where("userID", isEqualTo: user.uid)
         .getDocuments();
     List<Post> posts =
         snapshot.documents.map((doc) => Post.fromDocument(doc)).toList();
     setState(() {
       this.posts = posts;
     });
+    
   }
 
   buildTimeline() {
@@ -82,9 +87,6 @@ class _MyPublicBookScreenState extends State<MyPublicBookScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () => getTimeline(),
-      child: buildTimeline(),
-    );
+    return buildTimeline();
   }
 }

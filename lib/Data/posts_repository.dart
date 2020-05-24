@@ -5,6 +5,8 @@ import 'package:firebase_flutter_life/Models/post_model.dart';
 class PostRepository {
   
   final CollectionReference publicPostsRef = Firestore.instance.collection("publicPosts");
+
+  final CollectionReference postsRef = Firestore.instance.collection("posts");
   
   
 
@@ -42,7 +44,7 @@ class PostRepository {
    }
 
      Stream<List<Post>> streamPostByUser(String userID){
-     var ref = publicPostsRef.where("uid", isEqualTo: userID);
+     var ref = postsRef.where("userID", isEqualTo: userID);
      return ref.snapshots().map((list) => 
      list.documents.map((doc) => Post.fromDocument(doc)).toList()
      ); 

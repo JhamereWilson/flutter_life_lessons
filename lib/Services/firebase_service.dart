@@ -48,9 +48,7 @@ final _auth = FirebaseAuth.instance;
     final user = await FirebaseAuth.instance.currentUser();
     final userData = await Firestore.instance.collection("users").document(user.uid).get();
     await Firestore.instance
-    .collection("publicPosts")
-    .document("Topics")
-    .collection(topic)
+    .collection("posts")
     .document(uuid.v4())
     .setData({
       "title" : title,

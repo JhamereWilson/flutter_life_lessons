@@ -23,9 +23,8 @@ class _TopicSelectedScreenState extends State<TopicSelectedScreen> {
 
   getTimeline() async {
     QuerySnapshot snapshot = await PostRepository()
-        .publicPostsRef
-        .document("Topics")
-        .collection(widget.topic)
+        .postsRef
+        .where("topic", isEqualTo: widget.topic)
         .getDocuments();
     List<Post> posts =
         snapshot.documents.map((doc) => Post.fromDocument(doc)).toList();

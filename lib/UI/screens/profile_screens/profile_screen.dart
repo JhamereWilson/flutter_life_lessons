@@ -22,11 +22,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  getUserData() async {
-    var currentUser = await FirebaseAuth.instance.currentUser();
-    UserRepository().usersRef.document(currentUser.uid).get();
-    print(currentUser.uid);
-  }
+ 
 
   buildProfileHeader() {
     return FutureBuilder(
