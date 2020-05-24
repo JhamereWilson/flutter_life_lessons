@@ -1,4 +1,7 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_flutter_life/Data/user_repository.dart';
 import 'package:firebase_flutter_life/Models/models.dart';
 
 
@@ -6,6 +9,7 @@ import 'package:firebase_flutter_life/UI/screens/screens.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'profile_screens/profile_screen.dart';
 import 'record_screens/record_begin_screen.dart';
@@ -15,24 +19,29 @@ import 'topic_screens/topics_screen.dart';
 
 
 
+User currentUser;
 
 class HomeScreen extends StatefulWidget {
-  final User user;
+  
 
-  HomeScreen({Key key, this.user}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  
+ 
+  
   PageController pageController;
   int pageIndex = 0;
+  
 
   @override
   void initState() {
     super.initState();
     pageController = PageController();
+  
   }
 
   @override
@@ -55,14 +64,17 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
+     final user = Provider.of<User>(context);
+
     return Scaffold(
       body: PageView(
         children: <Widget>[
           TopicsScreen(),
           RecordBeginScreen(),
-          ProfileScreen(),
+          ProfileScreen(currentUser: user),
         ],
         controller: pageController,
         onPageChanged: onPageChanged,

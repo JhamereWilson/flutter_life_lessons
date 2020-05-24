@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_flutter_life/Services/firebase_service.dart';
@@ -47,6 +48,14 @@ class _TestRecordState extends State<TestRecord> with TickerProviderStateMixin {
   bool isUploading = false;
   bool isPlaying = false;
   var uuid = Uuid();
+  final List<String> entries = <String>[
+    'Great',
+    'Amazing',
+    'Insightful',
+    'Touching',
+  ];
+  final random = Random();
+  int index = 0;
 
   AudioPlayer audioPlayer = AudioPlayer();
 
@@ -167,6 +176,22 @@ class _TestRecordState extends State<TestRecord> with TickerProviderStateMixin {
                   ),
                   onPressed: () {
                     _trySubmit();
+                    index = random.nextInt(4);
+                    final snackBar = SnackBar(
+                      content: Text(
+                        ('That was ${entries[index]} 🤗'),
+                        // style: kTitleTextStyle,
+                        textAlign: TextAlign.center,
+                      ),
+//            action: SnackBarAction(
+//              label: 'Undo',
+//              onPressed: () {
+//                // Some code to undo the recording.
+//              },
+//            ),
+                    );
+
+                    Scaffold.of(context).showSnackBar(snackBar);
                   },
                   gradient: LinearGradient(
                     colors: <Color>[
@@ -177,6 +202,7 @@ class _TestRecordState extends State<TestRecord> with TickerProviderStateMixin {
                 ),
               ],
               content: Form(
+                key: _formKey,
                 child: Column(
                   children: <Widget>[
                     TextFormField(

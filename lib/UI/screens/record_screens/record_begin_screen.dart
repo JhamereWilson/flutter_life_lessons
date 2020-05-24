@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_flutter_life/Models/topics.dart.dart';
 
 import 'package:flutter/material.dart';
@@ -15,6 +16,9 @@ class RecordBeginScreen extends StatefulWidget {
 }
 
 class _RecordBeginScreenState extends State<RecordBeginScreen> {
+
+
+
   var recordingTopic = "Select a Topic";
   @override
   Widget build(BuildContext context) {

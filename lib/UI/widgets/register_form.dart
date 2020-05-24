@@ -27,6 +27,15 @@ class _RegisterFormState extends State<RegisterForm> {
     if (isValid) {
       _formKey.currentState.save();
     }
+      if (_userImageFile == null) {
+      Scaffold.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please pick an image.'),
+          backgroundColor: Theme.of(context).errorColor,
+        ),
+      );
+      return;
+    }
     try {
     FirebaseService().submitAuthForm(email, password, username, _userImageFile, context);
     } on PlatformException catch (err) {

@@ -14,7 +14,7 @@ class Wrapper extends StatelessWidget {
 
     //return either Home Screen or Authenticate widget
     if (user != null) {
-      return HomeScreen(user: user);
+      return HomeScreen();
     }
     return RegisterScreen();
   }
