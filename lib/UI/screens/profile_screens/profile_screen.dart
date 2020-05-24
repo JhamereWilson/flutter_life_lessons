@@ -166,7 +166,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         });
   }
 
-  skeletonHeader() {
+  skeletonHeader() { // Skeleton Header while connecting to network
     return Container(
       height: 320,
       width: double.infinity,

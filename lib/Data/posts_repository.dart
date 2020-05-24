@@ -37,7 +37,14 @@ class PostRepository {
   Stream<List<Post>> streamPostByTopic(String topic){
      var ref = publicPostsRef.where("topic", isEqualTo: topic);
      return ref.snapshots().map((list) => 
-     list.documents.map((doc) => Post.fromFirestore(doc)).toList()
+     list.documents.map((doc) => Post.fromDocument(doc)).toList()
+     ); 
+   }
+
+     Stream<List<Post>> streamPostByUser(String userID){
+     var ref = publicPostsRef.where("uid", isEqualTo: userID);
+     return ref.snapshots().map((list) => 
+     list.documents.map((doc) => Post.fromDocument(doc)).toList()
      ); 
    }
 

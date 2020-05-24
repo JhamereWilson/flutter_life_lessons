@@ -34,3 +34,17 @@ class App extends StatelessWidget {
     );
   }
 }
+
+
+/* TO DO:
+          Cloud Messaging Through Firebase
+          Skeleton Post Tiles
+          If posts = null ....
+          Favorite Posts Lists
+          Followers/Following
+          Private Posts 
+          Private Followers/Following
+
+
+
+*/

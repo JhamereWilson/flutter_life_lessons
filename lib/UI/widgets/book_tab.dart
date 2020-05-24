@@ -1,11 +1,15 @@
 
 
+import 'package:firebase_flutter_life/Models/models.dart';
 import 'package:firebase_flutter_life/UI/screens/profile_screens/my_favorite_book_screen.dart';
 import 'package:firebase_flutter_life/UI/screens/profile_screens/my_private_book_view.dart';
 import 'package:firebase_flutter_life/UI/screens/profile_screens/my_public_book_view.dart';
 import 'package:flutter/material.dart';
 
 class ToggleLessonView extends StatefulWidget {
+  final User currentUser;
+
+  const ToggleLessonView({Key key, this.currentUser}) : super(key: key);
   @override
   _ToggleLessonViewState createState() => _ToggleLessonViewState();
 }
@@ -71,9 +75,9 @@ class _ToggleLessonViewState extends State<ToggleLessonView>
               child: TabBarView(
                 controller: _tabController,
                 children: <Widget>[
-                  MyPublicBookScreen(),
-                  MyPrivateBookScreen(),
-                  MyFavoriteBookScreen(),
+                  MyPublicBookScreen(currentUser: widget.currentUser,),
+                  MyPrivateBookScreen(currentUser: widget.currentUser,),
+                  MyFavoriteBookScreen(currentUser: widget.currentUser,),
                 ],
               ),
             ),

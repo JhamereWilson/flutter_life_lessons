@@ -1,4 +1,5 @@
 
+import 'package:firebase_flutter_life/UI/screens/topic_screens/topic_selected_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -77,7 +78,7 @@ class _TopicSearchState extends State<TopicSearch> {
                           onTap: () {
                             var learnRoute = MaterialPageRoute(
                               builder: (BuildContext context) =>
-                                  SelectedTopicScreen(topic: items[index]),
+                                  TopicSelectedScreen(topic: items[index]),
                             );
                             Navigator.of(context).push(learnRoute);
                           },

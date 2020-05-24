@@ -1,7 +1,10 @@
+import 'package:firebase_flutter_life/Models/models.dart';
 import 'package:flutter/material.dart';
 
 class MyPrivateBookScreen extends StatelessWidget {
- 
+ final User currentUser;
+
+  const MyPrivateBookScreen({Key key, this.currentUser}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
