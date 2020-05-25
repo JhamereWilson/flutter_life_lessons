@@ -23,6 +23,7 @@ class App extends StatelessWidget {
       child: MaterialApp(
         home: Wrapper(),
         routes: {
+          '/root': (context) => HomeScreen(),
           '/topic-screen': (context) => TopicsScreen(),
           '/record-screen': (context) => RecordBeginScreen(),
           '/record-action': (context) => RecordScreen(),

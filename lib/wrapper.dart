@@ -16,6 +16,6 @@ class Wrapper extends StatelessWidget {
     if (user != null) {
       return HomeScreen();
     }
-    return RegisterScreen();
+    return WalkthroughScreen();
   }
 }

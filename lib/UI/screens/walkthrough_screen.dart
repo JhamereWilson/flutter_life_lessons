@@ -175,8 +175,8 @@ class _WalkthroughScreenState extends State<WalkthroughScreen> {
                 fontWeight: FontWeight.w300,
                 textColor: Colors.white,
                 onPressed: () {
-                  widget.prefs.setBool('seen', true);
-                  Navigator.of(context).pushNamed("/root");
+                  // widget.prefs.setBool('seen', true);
+                  Navigator.of(context).pushNamed('/register-screen');
                 },
                 splashColor: Colors.black12,
                 borderColor: Colors.white,
