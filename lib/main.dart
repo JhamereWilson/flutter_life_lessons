@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_flutter_life/Models/models.dart';
 import 'package:firebase_flutter_life/Services/auth_service.dart';
+import 'package:firebase_flutter_life/UI/screens/topic_screens/archived_topics.dart';
 import 'package:firebase_flutter_life/wrapper.dart';
 
 import 'package:flutter/cupertino.dart';
@@ -11,6 +12,7 @@ import 'UI/screens/profile_screens/profile_screen.dart';
 import 'UI/screens/record_screens/record_begin_screen.dart';
 import 'UI/screens/record_screens/record_screen.dart';
 import 'UI/screens/screens.dart';
+import 'UI/screens/topic_screens/archived_topic_screen.dart';
 import 'UI/screens/topic_screens/topics_screen.dart';
 
 void main() => runApp(App());
@@ -30,6 +32,7 @@ class App extends StatelessWidget {
           '/profile-screen': (context) => ProfileScreen(),
           '/login-screen': (context) => LoginScreen(),
           '/register-screen': (context) => RegisterScreen(),
+          '/archived': (context) => ArchivedTopicsScreen(),
         },
       ),
     );

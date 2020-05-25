@@ -160,8 +160,9 @@ class AppDrawer extends StatelessWidget {
                   //borderRadius: BorderRadius.circular(20.0),
                 ), 
                 onPressed: () {
+                Navigator.pushReplacementNamed(context, LoginScreen.routeName);
                FirebaseAuth.instance.signOut();
-               Navigator.pushNamed(context, LoginScreen.routeName);
+               
                
                   print("user logged out");
                 },

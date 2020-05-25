@@ -1,3 +1,4 @@
+import 'package:firebase_flutter_life/UI/screens/register_screen.dart';
 import 'package:firebase_flutter_life/UI/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -13,22 +14,29 @@ class LoginScreen extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {},
-           
           )
         ],
       ),
       body: SingleChildScrollView(
-              child: Column(
+        child: Column(
           children: <Widget>[
-            Text("life lessons", style: TextStyle(color: Colors.blue, fontSize: 28.0, fontWeight: FontWeight.w500),),
+            Text(
+              "life lessons",
+              style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 28.0,
+                  fontWeight: FontWeight.w500),
+            ),
             LoginForm(),
-              Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text("Don't have an account?"),
                 FlatButton(
                   textColor: Colors.blue,
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(context, RegisterScreen.routeName);
+                  },
                   child: Text("Sign Up"),
                 ),
               ],

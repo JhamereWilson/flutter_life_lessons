@@ -63,7 +63,7 @@ class _MyPrivateBookScreenState extends State<MyPrivateBookScreen> {
                       borderRadius: BorderRadius.circular(20),
                     ),
               color: Colors.indigo[300],
-              onPressed: (){},
+              onPressed: (){ Navigator.pushReplacementNamed(context, '/record-screen');},
               child: Text("Record your first private lesson!", style: TextStyle(color: Colors.white),textAlign: TextAlign.center,),
             ),
           ),

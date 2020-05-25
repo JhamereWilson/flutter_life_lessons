@@ -75,7 +75,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         future:
             UserRepository().usersRef.document(widget.currentUser.userID).get(),
         builder: (context, futureSnapshot) {
-          if (futureSnapshot.connectionState == ConnectionState.waiting) {
+          if (futureSnapshot.connectionState == ConnectionState.waiting ) {
+            return skeletonHeader();
+          }
+          else if (widget.currentUser.userID == null) {
             return skeletonHeader();
           }
           User user = User.fromDocument(futureSnapshot.data);

@@ -198,7 +198,7 @@ class _TestRecordState extends State<TestRecord> with TickerProviderStateMixin {
                     ),
                     onPressed: () {
                       _trySubmit();
-                      Navigator.pushNamed(context, '/root');
+                     Navigator.pushReplacementNamed(context, "/root");
                       index = random.nextInt(4);
                       final snackBar = SnackBar(
                         content: Text(

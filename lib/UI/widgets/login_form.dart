@@ -1,16 +1,11 @@
-
-
 import 'package:firebase_flutter_life/Services/auth_service.dart';
 import 'package:flutter/material.dart';
-
 
 class LoginForm extends StatefulWidget {
   State<LoginForm> createState() => _LoginFormState();
 }
 
 class _LoginFormState extends State<LoginForm> {
-
-
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
 
@@ -18,7 +13,26 @@ class _LoginFormState extends State<LoginForm> {
   String password = "";
   String error = "";
 
-
+  void _trySubmit() {
+    final isValid = _formKey.currentState.validate();
+    FocusScope.of(context).unfocus(); // gets rid of keyboard on submit
+    if (isValid) {
+      _formKey.currentState.save();
+    }
+    dynamic result = _auth.signInWithEmailAndPassword(email, password);
+    if (result == null) {
+      setState(() => error = "Invalid email or password.");
+      Scaffold.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } else {
+      Navigator.pushReplacementNamed(context, "/root");
+      
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,20 +45,17 @@ class _LoginFormState extends State<LoginForm> {
             child: Column(
               children: <Widget>[
                 TextFormField(
-                 
-                  decoration: InputDecoration(
-                    icon: Icon(Icons.email),
-                    labelText: 'Your Email Address',
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                  autovalidate: true,
-                  autocorrect: false,
-                  onChanged: (val) {
-                    setState(() => email = val);
-                  }
-                ),
+                    decoration: InputDecoration(
+                      icon: Icon(Icons.email),
+                      labelText: 'Your Email Address',
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    autovalidate: true,
+                    autocorrect: false,
+                    onChanged: (val) {
+                      setState(() => email = val);
+                    }),
                 TextFormField(
-                  
                   decoration: InputDecoration(
                     icon: Icon(Icons.lock),
                     labelText: 'Password',
@@ -55,7 +66,9 @@ class _LoginFormState extends State<LoginForm> {
                   onChanged: (val) {
                     setState(() => password = val);
                   },
-                  validator: (val) => val.isEmpty || val.length < 6 ? "Password must be 6 or more characters." : null,
+                  validator: (val) => val.isEmpty || val.length < 6
+                      ? "Password must be 6 or more characters."
+                      : null,
                 ),
                 SizedBox(
                   height: 10,
@@ -64,18 +77,12 @@ class _LoginFormState extends State<LoginForm> {
                   width: 250,
                   height: 50,
                   child: RaisedButton(
-                    onPressed: () {
-                       if(_formKey.currentState.validate()) {
-                        dynamic result = _auth.signInWithEmailAndPassword(email, password);
-                        if(result == null) {
-                          setState(() => error = "Invalid email or password.");
-                        }
-                     }
-                    },
+                    onPressed: () => _trySubmit(),
                     child: Text("Login"),
                   ),
                 ),
-                Text(error, style: TextStyle(color: Colors.red,fontSize: 14.0)),
+                Text(error,
+                    style: TextStyle(color: Colors.red, fontSize: 14.0)),
                 FlatButton(
                   onPressed: () {},
                   child: Text("Forgot Password?"),
@@ -87,5 +94,4 @@ class _LoginFormState extends State<LoginForm> {
       ),
     );
   }
-
 }

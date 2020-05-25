@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_flutter_life/Data/posts_repository.dart';
 import 'package:firebase_flutter_life/Models/post_model.dart';
@@ -50,7 +51,18 @@ class _TopicSelectedScreenState extends State<TopicSelectedScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.topic)),
+      appBar: AppBar(
+        title: AutoSizeText(widget.topic, maxLines: 1,),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: <Color>[ Colors.lightGreen[200],
+                  Colors.lightBlue[600],]),
+          ),
+        ),
+      ),
       body: RefreshIndicator(
         onRefresh: () => getTimeline(),
         child: buildTimeline(),

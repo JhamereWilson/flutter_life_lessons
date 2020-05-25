@@ -120,7 +120,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     onPressed: () async {
                       // if (_formKey.currentState.validate()) {
                       _trySubmit();
-                      Navigator.pushNamed(context, '/root');
+                      Navigator.pushReplacementNamed(context, '/root');
                     },
                     child: Text("Register"),
                   ),
@@ -129,7 +129,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     style: TextStyle(color: Colors.red, fontSize: 14.0),),
                 FlatButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, LoginScreen.routeName);
+                    Navigator.pushReplacementNamed(context, LoginScreen.routeName);
                   },
                   child: Text("Already Have an Account?"),
                 ),

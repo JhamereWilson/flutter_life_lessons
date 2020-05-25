@@ -4,12 +4,12 @@ import 'package:flutter/widgets.dart';
 
 import 'selected_topic.dart';
 
-class TopicSearch extends StatefulWidget {
+class ArchivedTopics extends StatefulWidget {
   @override
-  _TopicSearchState createState() => _TopicSearchState();
+  _ArchivedTopicsState createState() => _ArchivedTopicsState();
 }
 
-class _TopicSearchState extends State<TopicSearch> {
+class _ArchivedTopicsState extends State<ArchivedTopics> {
   List<String> items = List<String>();
   TextEditingController controller = new TextEditingController();
   String filter;
@@ -17,13 +17,13 @@ class _TopicSearchState extends State<TopicSearch> {
   @override
   initState() {
     super.initState();
-    items.add("How to Move On");
-    items.add("Road to Happiness");
-    items.add("Wrestling with GOD");
-    items.add("Making a Dream a Reality");
-    items.add("When Your Best Is Not Enough");
-    items.add("How to Trust Again");
-    items.add("So You Want A Career in Film");
+    items.add("Battling Insecurity");
+    items.add("Despite The Odds...");
+    items.add("How To Love Myself");
+    items.add("Overlooked Hardships of Motherhood");
+    items.add("Forgiving Yourself");
+    items.add("Favorite Traditions");
+    items.add("So You Want A Career in Music");
     controller.addListener(() {
       setState(() {
         filter = controller.text;
@@ -85,25 +85,6 @@ class _TopicSearchState extends State<TopicSearch> {
                       ),
                     );
                   },
-                ),
-              ),
-              SizedBox(height: 20),
-              Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    color: Colors.white70),
-                width: 250,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    FlatButton(
-                      child: Text("Archived Lessons"),
-                      onPressed: () {
-                        Navigator.pushNamed(context, "/archived");
-                      },
-                    ),
-                    Icon(Icons.arrow_forward),
-                  ],
                 ),
               ),
             ],

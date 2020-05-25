@@ -11,9 +11,11 @@ import 'user_private_book.dart';
 import 'user_public_book.dart';
 
 class UserToggleLessonView extends StatefulWidget {
-  final String currentUserID;
+  final String profileID;
 
-  const UserToggleLessonView({Key key, this.currentUserID}) : super(key: key);
+  const UserToggleLessonView({Key key, this.profileID}) : super(key: key);
+
+ 
 
   
   @override
@@ -81,9 +83,9 @@ class _UserToggleLessonViewState extends State<UserToggleLessonView>
               child: TabBarView(
                 controller: _tabController,
                 children: <Widget>[
-                  UserPublicBookScreen(),
-                  UserPrivateBookScreen(),
-                  UserFavoriteBookScreen(),
+                  UserPublicBookScreen(profileID: widget.profileID,),
+                  UserPrivateBookScreen(profileID: widget.profileID),
+                  UserFavoriteBookScreen(profileID: widget.profileID),
                 ],
               ),
             ),

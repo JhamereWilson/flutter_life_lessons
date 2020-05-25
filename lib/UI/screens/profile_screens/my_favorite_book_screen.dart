@@ -71,7 +71,9 @@ class _MyFavoriteBookScreenState extends State<MyFavoriteBookScreen> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 color: Colors.indigo[300],
-                onPressed: () {},
+                onPressed: () {
+                   Navigator.pushReplacementNamed(context, '/record-screen');
+                },
                 child: Text(
                   "Listen and favorite a lesson!",
                   style: TextStyle(color: Colors.white),

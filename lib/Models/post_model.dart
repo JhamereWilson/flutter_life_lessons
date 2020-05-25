@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_flutter_life/Data/posts_repository.dart';
@@ -70,6 +71,7 @@ class _PostState extends State<Post> {
   bool isLiked;
   int likeCount;
   Map likes;
+  bool isPlaying = false;
 
   _PostState({
     this.title,
@@ -94,8 +96,13 @@ class _PostState extends State<Post> {
           }
           User user = User.fromDocument(snapshot.data);
 
-          return CircleAvatar(
-            backgroundImage: NetworkImage(user.profileImageUrl),
+          return GestureDetector(
+            onTap: () {
+              showProfile(context, userID);
+            },
+            child: CircleAvatar(
+              backgroundImage: NetworkImage(user.profileImageUrl),
+            ),
           );
         });
   }
@@ -173,36 +180,25 @@ class _PostState extends State<Post> {
       child: GestureDetector(
         onTap: () {
           AudioService().play(recordingURL);
+          setState(() {
+            isPlaying = true;
+          });
         },
         child: Card(
           margin: EdgeInsets.fromLTRB(20, 6, 20, 0),
+          color: Colors.white,
+          elevation: isPlaying ? 10 : 1,
           child: ListTile(
             leading: buildPostHeader(),
-            title: Row(
-              children: <Widget>[
-                Text(
-                  topic,
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
-                ),
-                SizedBox(
-                  width: 5,
-                ),
-                Text(
-                  title,
-                  style: TextStyle(fontWeight: FontWeight.w300, fontSize: 13),
-                )
-              ],
+            title: AutoSizeText(
+              title,
+              style: TextStyle(fontWeight: FontWeight.w300, fontSize: 13),
+              maxLines: 1,
             ),
-            subtitle: GestureDetector(
-              onTap: () {
-                user.userID != userID
-                    ? showProfile(context, userID)
-                    : print("this is your profile");
-              },
-              child: Text(
-                username,
-                style: TextStyle(fontWeight: FontWeight.w200, fontSize: 14),
-              ),
+            subtitle: AutoSizeText(
+              topic,
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
+              maxLines: 1,
             ),
             trailing: GestureDetector(
               onTap: handleLikePost,

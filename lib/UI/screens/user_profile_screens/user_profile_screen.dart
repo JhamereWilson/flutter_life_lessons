@@ -29,6 +29,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   bool acessGranted = false;
   bool isLoading = false;
 
+
+  @override
+  void initState() {
+    super.initState();
+    checkIfAcessGranted();
+  }
+
   checkIfAcessGranted() async {
     var currentUser = await FirebaseAuth.instance.currentUser();
     String currentUserId = currentUser.uid;
@@ -42,7 +49,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     });
   }
 
-    handleAcessGranted() async {
+  handleAcessGranted() async {
     var currentUser = await FirebaseAuth.instance.currentUser();
     String currentUserId = currentUser.uid;
     setState(() {
@@ -120,7 +127,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-  buildProfileButton() {
+  buildProfileButton()  {
+   
     if (acessGranted) {
       return buildButton(
         text: "Block From Private Book",
@@ -131,10 +139,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         text: "Give Private Book Access",
         function: handleAcessGranted,
       );
-    }
+    } 
   }
-
-
 
   buildProfileHeader() {
     return FutureBuilder(
@@ -319,7 +325,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   toggleBookView() {
-    return UserToggleLessonView(currentUserID: widget.profileID,);
+    return UserToggleLessonView(
+      profileID: widget.profileID,
+    );
   }
 
   buildProfileScreen() {

@@ -8,31 +8,28 @@ import 'package:firebase_flutter_life/UI/screens/screens.dart';
 import 'package:flutter/material.dart';
 
 class UserPrivateBookScreen extends StatefulWidget {
- final String profileID;
+  final String profileID;
 
   const UserPrivateBookScreen({Key key, this.profileID}) : super(key: key);
-
-  
 
   @override
   _UserPrivateBookScreenState createState() => _UserPrivateBookScreenState();
 }
 
 class _UserPrivateBookScreenState extends State<UserPrivateBookScreen> {
-
   final followersRef = Firestore.instance.collection('followers');
   final followingRef = Firestore.instance.collection('following');
 
   bool accessGranted = false;
 
-   List<PrivatePost> posts;
+  List<PrivatePost> posts;
 
-     @override
+  @override
   void initState() {
     super.initState();
     getTimeline();
+    checkIfAccessGranted();
   }
-
 
   checkIfAccessGranted() async {
     var currentUser = await FirebaseAuth.instance.currentUser();
@@ -47,11 +44,10 @@ class _UserPrivateBookScreenState extends State<UserPrivateBookScreen> {
     });
   }
 
-    getTimeline() async {
-    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+  getTimeline() async {
     QuerySnapshot snapshot = await PostRepository()
         .privatePostsRef
-        .document(user.uid)
+        .document(widget.profileID)
         .collection("privateUserPosts")
         .getDocuments();
     List<PrivatePost> posts =
@@ -68,31 +64,40 @@ class _UserPrivateBookScreenState extends State<UserPrivateBookScreen> {
       );
     } else if (posts.isEmpty) {
       return SingleChildScrollView(
-          child: Column(
-        children: <Widget>[
-          SizedBox(height: 70),
-          Icon(Icons.filter_none, color: Colors.black26,),
-              SizedBox(height: 20),
-          Text("It looks like you haven't started your private book yet.", style: TextStyle(color: Colors.black26, fontSize: 16.0),),
-              SizedBox(height: 20),
-          Text("To start a private book, record a lesson and select the option 'add to private book' ", style: TextStyle(color: Colors.black26, fontSize: 16.0), textAlign: TextAlign.center,),
-              SizedBox(height: 30),
-          SizedBox(
-            height: 50,
-            width: 250,
-                    child: FlatButton(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-              color: Colors.indigo[300],
-              onPressed: (){},
-              child: Text("Record your first private lesson!", style: TextStyle(color: Colors.white),textAlign: TextAlign.center,),
+        child: Column(
+          children: <Widget>[
+            SizedBox(height: 70),
+            Icon(
+              Icons.filter_none,
+              color: Colors.black26,
             ),
-          ),
-        
-        ],
-      ),
-    );
+            SizedBox(height: 20),
+            Text(
+              "It looks like you this user hasn't started a private book yet.",
+              style: TextStyle(color: Colors.black26, fontSize: 16.0),
+            ),
+            SizedBox(height: 20),
+          ],
+        ),
+      );
+    } else if (accessGranted != true) {
+      return SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            SizedBox(height: 70),
+            Icon(
+              Icons.block,
+              color: Colors.black26,
+            ),
+            SizedBox(height: 20),
+            Text(
+              "You don't have access to this user's private book",
+              style: TextStyle(color: Colors.black26, fontSize: 16.0),
+            ),
+            SizedBox(height: 20),
+          ],
+        ),
+      );
     } else {
       return ListView(children: posts);
     }

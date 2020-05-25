@@ -39,6 +39,7 @@ dependencies:
   equatable: ^1.1.1
   bloc: ^4.0.0
   flutter_bloc: ^4.0.0
+  auto_size_text: ^2.1.0
 
 
   intl: ^0.16.1
