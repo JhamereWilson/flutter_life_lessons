@@ -7,12 +7,11 @@ import 'package:firebase_flutter_life/Data/user_repository.dart';
 import 'package:firebase_flutter_life/Models/models.dart';
 import 'package:firebase_flutter_life/Services/audio_service.dart';
 import 'package:firebase_flutter_life/UI/screens/home_screen.dart';
-import 'package:firebase_flutter_life/UI/screens/user_profile_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class Post extends StatefulWidget {
+class PrivatePost extends StatefulWidget {
   final String title;
   final String topic;
   final String postID;
@@ -20,9 +19,8 @@ class Post extends StatefulWidget {
   final String recordingURL;
   final String username;
   final String userImage;
-  final dynamic likes;
 
-  Post({
+  PrivatePost({
     @required this.title,
     @required this.topic,
     @required this.postID,
@@ -30,11 +28,10 @@ class Post extends StatefulWidget {
     @required this.recordingURL,
     @required this.username,
     @required this.userImage,
-    this.likes,
   });
 
-  factory Post.fromDocument(DocumentSnapshot doc) {
-    return Post(
+  factory PrivatePost.fromDocument(DocumentSnapshot doc) {
+    return PrivatePost(
       title: doc["title"],
       topic: doc["topic"],
       postID: doc["postID"],
@@ -42,11 +39,10 @@ class Post extends StatefulWidget {
       recordingURL: doc["recordingURL"],
       username: doc["username"],
       userImage: doc["userImage"],
-      likes: doc['likes'],
     );
   }
   @override
-  _PostState createState() => _PostState(
+  _PrivatePostState createState() => _PrivatePostState(
         title: this.title,
         topic: this.topic,
         postID: this.postID,
@@ -54,11 +50,10 @@ class Post extends StatefulWidget {
         recordingURL: this.recordingURL,
         username: this.username,
         userImage: this.userImage,
-        likes: this.likes,
       );
 }
 
-class _PostState extends State<Post> {
+class _PrivatePostState extends State<PrivatePost> {
   final String title;
   final String topic;
   final String postID;
@@ -69,9 +64,9 @@ class _PostState extends State<Post> {
   bool showHeart = false;
   bool isLiked;
   int likeCount;
-  Map likes;
+  bool isPlaying = false;
 
-  _PostState({
+  _PrivatePostState({
     this.title,
     this.topic,
     this.postID,
@@ -80,7 +75,6 @@ class _PostState extends State<Post> {
     this.username,
     this.userImage,
     this.likeCount,
-    this.likes,
   });
 
   buildPostHeader() {
@@ -100,97 +94,24 @@ class _PostState extends State<Post> {
         });
   }
 
-  handleLikePost() async {
-    var currentUser = await FirebaseAuth.instance.currentUser();
-    String currentUserId = currentUser.uid;
-    bool _isLiked = likes[currentUserId] == true;
-
-    if (_isLiked) {
-      PostRepository()
-          .postsRef
-          .document(postID)
-          .updateData({'likes.$currentUserId': false});
-      setState(() {
-        likeCount -= 1;
-        isLiked = false;
-        likes[currentUserId] = false;
-      });
-    } else if (!_isLiked) {
-      PostRepository()
-          .postsRef
-          .document(postID)
-          .updateData({'likes.$currentUserId': true});
-      addToFavorites();
-      setState(() {
-        likeCount += 1;
-        isLiked = true;
-        likes[currentUserId] = true;
-        showHeart = true;
-      });
-      Timer(Duration(milliseconds: 500), () {
-        setState(() {
-          showHeart = false;
-        });
-      });
-    }
-  }
-
-  addToFavorites() async {
-    var currentUser = await FirebaseAuth.instance.currentUser();
-    String currentUserId = currentUser.uid;
-    PostRepository()
-        .favoritesRef
-        .document(currentUserId)
-        .collection("userFavorites")
-        .document(postID)
-        .setData({
-      "title": title,
-      "topic": topic,
-      "postID": postID,
-      "userID": userID,
-      "recordingURL": recordingURL,
-      "username": username,
-      "userImage": userImage,
-      "likes": {},
-    });
-  }
-
-  showProfile(context, profileID) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => UserProfileScreen(profileID: profileID),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<User>(context);
-    isLiked = (likes[user.userID] == true);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
         onTap: () {
           AudioService().play(recordingURL);
+          setState(() {
+            isPlaying = true;
+          });
         },
         child: Card(
+          color: isPlaying ? Colors.black12 : Colors.white,
           margin: EdgeInsets.fromLTRB(20, 6, 20, 0),
           child: ListTile(
             leading: buildPostHeader(),
             title: Text(title),
-            subtitle: GestureDetector(
-              onTap: () {user.userID != userID? showProfile(context, userID) : print("this is your profile");},
-              child: Text(username),
-            ),
-            trailing: GestureDetector(
-              onTap: handleLikePost,
-              child: Icon(
-                isLiked ? Icons.favorite : Icons.favorite_border,
-                size: 28.0,
-                color: Colors.lightGreen[100],
-              ),
-            ),
+            subtitle: Text(username),
           ),
         ),
       ),

@@ -30,70 +30,70 @@ class AppDrawer extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Container(
-                width: double.infinity,
-                height: 30,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.bottomRight,
-                    end: Alignment.topLeft,
-                    colors: <Color>[
-                      Colors.lightGreen[200],
-                      Colors.lightBlue[600],
-                    ],
-                  ),
-                ),
-                child: Center(
-                  child: Text("Account Settings",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 16.0,
-                          color: Colors.white)),
-                )),
-            Divider(height: 0),
-            _createTile(context, "Name", Icons.arrow_forward_ios, () {}),
-            Divider(height: 0),
-            _createTile(context, "Username", Icons.arrow_forward_ios, () {}),
-            Divider(height: 0),
-            _createTile(context, "Email", Icons.arrow_forward_ios, () {}),
-            Divider(height: 0),
-            _createTile(context, "Location", Icons.arrow_forward_ios, () {}),
-            Divider(height: 0),
-            _createTile(context, "Password", Icons.arrow_forward_ios, () {}),
-            Divider(height: 0),
-            Container(
-                width: double.infinity,
-                height: 30,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.bottomRight,
-                    end: Alignment.topLeft,
-                    colors: <Color>[
-                      Colors.lightGreen[200],
-                      Colors.lightBlue[600],
-                    ],
-                  ),
-                ),
-                child: Center(
-                  child: Text("Notification Settings",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 16.0,
-                          color: Colors.white)),
-                )),
-            _createTile(context, "Turn Off All Notifications",
-                Icons.arrow_forward_ios, () {}),
-            Divider(height: 0),
-            _createTile(context, "Messages", Icons.arrow_forward_ios, () {}),
-            Divider(height: 0),
-            _createTile(
-                context, "Posts and Favorites", Icons.arrow_forward_ios, () {}),
-            Divider(height: 0),
-            _createTile(context, "Follower and Following",
-                Icons.arrow_forward_ios, () {}),
-            SizedBox(height: 10),
+            // Container(
+            //     width: double.infinity,
+            //     height: 30,
+            //     decoration: BoxDecoration(
+            //       gradient: LinearGradient(
+            //         begin: Alignment.bottomRight,
+            //         end: Alignment.topLeft,
+            //         colors: <Color>[
+            //           Colors.lightGreen[200],
+            //           Colors.lightBlue[600],
+            //         ],
+            //       ),
+            //     ),
+            //     child: Center(
+            //       child: Text("Account Settings",
+            //           textAlign: TextAlign.center,
+            //           style: TextStyle(
+            //               fontWeight: FontWeight.w400,
+            //               fontSize: 16.0,
+            //               color: Colors.white)),
+            //     )),
+            // Divider(height: 0),
+            // _createTile(context, "Name", Icons.arrow_forward_ios, () {}),
+            // Divider(height: 0),
+            // _createTile(context, "Username", Icons.arrow_forward_ios, () {}),
+            // Divider(height: 0),
+            // _createTile(context, "Email", Icons.arrow_forward_ios, () {}),
+            // Divider(height: 0),
+            // _createTile(context, "Location", Icons.arrow_forward_ios, () {}),
+            // Divider(height: 0),
+            // _createTile(context, "Password", Icons.arrow_forward_ios, () {}),
+            // Divider(height: 0),
+            // Container(
+            //     width: double.infinity,
+            //     height: 30,
+            //     decoration: BoxDecoration(
+            //       gradient: LinearGradient(
+            //         begin: Alignment.bottomRight,
+            //         end: Alignment.topLeft,
+            //         colors: <Color>[
+            //           Colors.lightGreen[200],
+            //           Colors.lightBlue[600],
+            //         ],
+            //       ),
+            //     ),
+            //     child: Center(
+            //       child: Text("Notification Settings",
+            //           textAlign: TextAlign.center,
+            //           style: TextStyle(
+            //               fontWeight: FontWeight.w400,
+            //               fontSize: 16.0,
+            //               color: Colors.white)),
+            //     )),
+            // _createTile(context, "Turn Off All Notifications",
+            //     Icons.arrow_forward_ios, () {}),
+            // Divider(height: 0),
+            // _createTile(context, "Messages", Icons.arrow_forward_ios, () {}),
+            // Divider(height: 0),
+            // _createTile(
+            //     context, "Posts and Favorites", Icons.arrow_forward_ios, () {}),
+            // Divider(height: 0),
+            // _createTile(context, "Follower and Following",
+            //     Icons.arrow_forward_ios, () {}),
+            // SizedBox(height: 10),
             Container(
                 width: double.infinity,
                 height: 30,
@@ -119,34 +119,34 @@ class AppDrawer extends StatelessWidget {
                 context, "Report a Bug", Icons.arrow_forward_ios, () {}),
             Divider(height: 0),
             _createTile(context, "Suggestions", Icons.arrow_forward_ios, () {}),
-            Container(
-                width: double.infinity,
-                height: 30,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.bottomRight,
-                    end: Alignment.topLeft,
-                    colors: <Color>[
-                      Colors.lightGreen[200],
-                      Colors.lightBlue[600],
-                    ],
-                  ),
-                ),
-                child: Center(
-                  child: Text("Legal",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 16.0,
-                          color: Colors.white)),
-                )),
-            _createTile(
-                context, "Privacy Policy", Icons.arrow_forward_ios, () {}),
-            Divider(height: 0),
-            _createTile(
-                context, "Terms of Service", Icons.arrow_forward_ios, () {}),
-            Divider(),
-            SizedBox(height: 20),
+            // Container(
+            //     width: double.infinity,
+            //     height: 30,
+            //     decoration: BoxDecoration(
+            //       gradient: LinearGradient(
+            //         begin: Alignment.bottomRight,
+            //         end: Alignment.topLeft,
+            //         colors: <Color>[
+            //           Colors.lightGreen[200],
+            //           Colors.lightBlue[600],
+            //         ],
+            //       ),
+            //     ),
+            //     child: Center(
+            //       child: Text("Legal",
+            //           textAlign: TextAlign.center,
+            //           style: TextStyle(
+            //               fontWeight: FontWeight.w400,
+            //               fontSize: 16.0,
+            //               color: Colors.white)),
+            //     )),
+            // _createTile(
+            //     context, "Privacy Policy", Icons.arrow_forward_ios, () {}),
+            // Divider(height: 0),
+            // _createTile(
+            //     context, "Terms of Service", Icons.arrow_forward_ios, () {}),
+            // Divider(),
+            // SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
               height: 40,

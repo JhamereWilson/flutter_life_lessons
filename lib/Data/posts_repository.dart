@@ -4,9 +4,9 @@ import 'package:firebase_flutter_life/Models/post_model.dart';
 
 class PostRepository {
   
-  final CollectionReference publicPostsRef = Firestore.instance.collection("publicPosts");
-
+  final CollectionReference privatePostsRef = Firestore.instance.collection("privatePosts");
   final CollectionReference postsRef = Firestore.instance.collection("posts");
+  final CollectionReference favoritesRef = Firestore.instance.collection("favorites");
   
   
 
@@ -35,20 +35,20 @@ class PostRepository {
   //    return Post.fromDocument(snapshot);
   //  }
 
-  //Cloud Firestore Fetch 
-  Stream<List<Post>> streamPostByTopic(String topic){
-     var ref = publicPostsRef.where("topic", isEqualTo: topic);
-     return ref.snapshots().map((list) => 
-     list.documents.map((doc) => Post.fromDocument(doc)).toList()
-     ); 
-   }
+  // //Cloud Firestore Fetch 
+  // Stream<List<Post>> streamPostByTopic(String topic){
+  //    var ref = publicPostsRef.where("topic", isEqualTo: topic);
+  //    return ref.snapshots().map((list) => 
+  //    list.documents.map((doc) => Post.fromDocument(doc)).toList()
+  //    ); 
+  // //  }
 
-     Stream<List<Post>> streamPostByUser(String userID){
-     var ref = postsRef.where("userID", isEqualTo: userID);
-     return ref.snapshots().map((list) => 
-     list.documents.map((doc) => Post.fromDocument(doc)).toList()
-     ); 
-   }
+  //    Stream<List<Post>> streamPostByUser(String userID){
+  //    var ref = postsRef.where("userID", isEqualTo: userID);
+  //    return ref.snapshots().map((list) => 
+  //    list.documents.map((doc) => Post.fromDocument(doc)).toList()
+  //    ); 
+  //  }
 
    //Realtime Database Fetch
   //    Stream<List<Post>> streamLessonsByTopic(String topic){

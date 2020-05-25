@@ -2,11 +2,9 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_flutter_life/Data/posts_repository.dart';
 import 'package:firebase_flutter_life/Data/user_repository.dart';
 import 'package:firebase_flutter_life/Models/models.dart';
 import 'package:firebase_flutter_life/Pickers/user_image_picker.dart';
-import 'package:firebase_flutter_life/UI/screens/screens.dart';
 import 'package:firebase_flutter_life/UI/screens/settings_screen.dart';
 
 import 'package:firebase_flutter_life/UI/widgets/book_tab.dart';
@@ -14,66 +12,130 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-class ProfileScreen extends StatefulWidget {
-  final User currentUser;
+class UserProfileScreen extends StatefulWidget {
+  final String profileID;
 
-  const ProfileScreen({Key key, this.currentUser}) : super(key: key);
+  const UserProfileScreen({Key key, this.profileID}) : super(key: key);
 
   @override
-  _ProfileScreenState createState() => _ProfileScreenState();
+  _UserProfileScreenState createState() => _UserProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _UserProfileScreenState extends State<UserProfileScreen> {
   final followersRef = Firestore.instance.collection('followers');
   final followingRef = Firestore.instance.collection('following');
 
-  int postCount = 0;
-  int followerCount = 0;
-  int followingCount = 0;
+  bool isFollowing = false;
+  bool isLoading = false;
 
-    @override
-  void initState() {
-    super.initState();
-    getPostCount();
-    getFollowers();
-    getFollowing();
-    
-  }
-
-  getFollowers() async {
-    QuerySnapshot snapshot = await followersRef
-        .document(widget.currentUser.userID)
+  checkIfFollowing() async {
+    var currentUser = await FirebaseAuth.instance.currentUser();
+    String currentUserId = currentUser.uid;
+    DocumentSnapshot doc = await followersRef
+        .document(widget.profileID)
         .collection('userFollowers')
-        .getDocuments();
+        .document(currentUserId)
+        .get();
     setState(() {
-      followerCount = snapshot.documents.length;
+      isFollowing = doc.exists;
     });
   }
 
-  getFollowing() async {
-    QuerySnapshot snapshot = await followingRef
-        .document(widget.currentUser.userID)
+  handleUnfollowUser() async {
+    var currentUser = await FirebaseAuth.instance.currentUser();
+    String currentUserId = currentUser.uid;
+    setState(() {
+      isFollowing = false;
+    });
+    // remove follower
+    followersRef
+        .document(widget.profileID)
+        .collection('userFollowers')
+        .document(currentUserId)
+        .get()
+        .then((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+    // remove following
+    followingRef
+        .document(currentUserId)
         .collection('userFollowing')
-        .getDocuments();
-    setState(() {
-      followingCount = snapshot.documents.length;
+        .document(widget.profileID)
+        .get()
+        .then((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
     });
   }
 
-  getPostCount() async {
-    QuerySnapshot snapshot = await PostRepository()
-        .postsRef
-        .where("userID", isEqualTo: widget.currentUser.userID)
-        .getDocuments();
+  Container buildButton({String text, Function function}) {
+    return Container(
+      padding: EdgeInsets.only(top: 2.0),
+      child: FlatButton(
+        onPressed: function,
+        child: Container(
+          width: 300.0,
+          height: 40.0,
+          child: Text(
+            text,
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w300,
+            ),
+          ),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: Colors.black12,
+            border: Border.all(
+              color: Colors.white,
+            ),
+            borderRadius: BorderRadius.circular(5.0),
+          ),
+        ),
+      ),
+    );
+  }
+
+  buildProfileButton() {
+    if (isFollowing) {
+      return buildButton(
+        text: "Block From Private Book",
+        function: handleUnfollowUser,
+      );
+    } else if (!isFollowing) {
+      return buildButton(
+        text: "Give Private Book Access",
+        function: handleFollowUser,
+      );
+    }
+  }
+
+  handleFollowUser() async {
+    var currentUser = await FirebaseAuth.instance.currentUser();
+    String currentUserId = currentUser.uid;
     setState(() {
-      postCount = snapshot.documents.length;
+      isFollowing = true;
     });
+    // Make auth user follower of THAT user (update THEIR followers collection)
+    followersRef
+        .document(widget.profileID)
+        .collection('userFollowers')
+        .document(currentUserId)
+        .setData({});
+    // Put THAT user on YOUR following collection (update your following collection)
+    followingRef
+        .document(currentUserId)
+        .collection('userFollowing')
+        .document(widget.profileID)
+        .setData({});
   }
 
   buildProfileHeader() {
     return FutureBuilder(
-        future:
-            UserRepository().usersRef.document(widget.currentUser.userID).get(),
+        future: UserRepository().usersRef.document(widget.profileID).get(),
         builder: (context, futureSnapshot) {
           if (futureSnapshot.connectionState == ConnectionState.waiting) {
             return skeletonHeader();
@@ -110,18 +172,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           IconButton(
-                            icon: Icon(Icons.inbox),
-                            color: Colors.transparent,
-                            onPressed: () {},
-                          ),
+                              icon: Icon(Icons.arrow_back),
+                              color: Colors.white,
+                              onPressed: () {
+                                Navigator.pop(context);
+                              }),
                           Text(
-                            "Your Book",
+                            "${user.username}'s Book",
                             style: TextStyle(
                                 fontSize: 20,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w300),
                           ),
-                          AppDrawerButton(),
+                          IconButton(
+                              icon: Icon(Icons.menu),
+                              color: Colors.transparent,
+                              onPressed: () {}),
                         ],
                       ),
                       SizedBox(height: 20),
@@ -152,65 +218,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ],
                       ),
                       SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Column(
-                            children: <Widget>[
-                              Text(
-                                followerCount.toString(),
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                "Audience",
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w300),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: <Widget>[
-                              Text(
-                                followingCount.toString(),
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                "Classmates",
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w300),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: <Widget>[
-                              Text(
-                                postCount.toString(),
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                "Lessons",
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w300),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
+                      buildProfileButton(),
                     ],
                   ),
                 ),
@@ -312,14 +320,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   buildProfileScreen() {
-    return Container(
-      color: Colors.white24,
-      child: Column(
-        children: <Widget>[
-          buildProfileHeader(),
-          SizedBox(height: 10),
-          toggleBookView()
-        ],
+    return Material(
+      child: Container(
+        color: Colors.white24,
+        child: Column(
+          children: <Widget>[
+            buildProfileHeader(),
+            SizedBox(height: 10),
+            toggleBookView()
+          ],
+        ),
       ),
     );
   }

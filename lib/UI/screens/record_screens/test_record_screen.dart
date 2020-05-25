@@ -47,6 +47,7 @@ class _TestRecordState extends State<TestRecord> with TickerProviderStateMixin {
   bool isRecording = false;
   bool isUploading = false;
   bool isPlaying = false;
+  bool isPrivate = false;
   var uuid = Uuid();
   final List<String> entries = <String>[
     'Great',
@@ -143,111 +144,119 @@ class _TestRecordState extends State<TestRecord> with TickerProviderStateMixin {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        FlatButton(
-          onPressed: () {
-            play();
+        Text(
+          "Private Lesson?",
+          style: TextStyle(
+              fontWeight: FontWeight.w300, fontSize: 22, color: Colors.white70),
+        ),
+        Switch(
+          value: isPrivate,
+          activeTrackColor: Colors.red,
+          activeColor: Colors.white,
+          onChanged: (value) {
+            setState(() {
+              isPrivate = value;
+              print(value);
+            });
           },
-          color: Colors.blueGrey[400],
-          padding: EdgeInsets.all(8.0),
-          child: const Text(
-            "Listen to Recorded Lesson",
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w300,
+        ),
+        Container(
+          width: 250,
+          child: FlatButton(
+            onPressed: () {
+              play();
+            },
+            color: Colors.black26,
+            padding: EdgeInsets.all(8.0),
+            child: const Text(
+              "Listen to Recorded Lesson",
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w300,
+              ),
             ),
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
           ),
         ),
         SizedBox(
-          height: 10,
+          height: 17,
         ),
-        FlatButton(
-          onPressed: () {
-            return Alert(
-              context: context,
-              title: widget.topic,
-              buttons: [
-                DialogButton(
-                  child: Text(
-                    "Submit Lesson",
-                    style: TextStyle(color: Colors.white, fontSize: 20),
-                  ),
-                  onPressed: () {
-                    _trySubmit();
-                    index = random.nextInt(4);
-                    final snackBar = SnackBar(
-                      content: Text(
-                        ('That was ${entries[index]} 🤗'),
-                        // style: kTitleTextStyle,
-                        textAlign: TextAlign.center,
-                      ),
+        Container(
+          width: 250,
+          child: FlatButton(
+            onPressed: () {
+              return Alert(
+                context: context,
+                title: widget.topic,
+                buttons: [
+                  DialogButton(
+                    child: Text(
+                      "Submit Lesson",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                    onPressed: () {
+                      _trySubmit();
+                      index = random.nextInt(4);
+                      final snackBar = SnackBar(
+                        content: Text(
+                          ('That was ${entries[index]} 🤗'),
+                          // style: kTitleTextStyle,
+                          textAlign: TextAlign.center,
+                        ),
 //            action: SnackBarAction(
 //              label: 'Undo',
 //              onPressed: () {
 //                // Some code to undo the recording.
 //              },
 //            ),
-                    );
+                      );
 
-                    Scaffold.of(context).showSnackBar(snackBar);
-                  },
-                  gradient: LinearGradient(
-                    colors: <Color>[
-                      Colors.green[200],
-                      Colors.lightBlue[500],
+                      Scaffold.of(context).showSnackBar(snackBar);
+                    },
+                    gradient: LinearGradient(
+                      colors: <Color>[
+                        Colors.green[200],
+                        Colors.lightBlue[500],
+                      ],
+                    ),
+                  ),
+                ],
+                content: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: <Widget>[
+                      // Text("Private or Public Lesson?", style: TextStyle(fontWeight: FontWeight.w300, fontSize: 12),),
+
+                      TextFormField(
+                        decoration: InputDecoration(labelText: "Lesson Title"),
+                        onSaved: (val) {
+                          recordingTitle = val;
+                        },
+                      ),
+                      SizedBox(height: 20),
                     ],
                   ),
                 ),
-              ],
-              content: Form(
-                key: _formKey,
-                child: Column(
-                  children: <Widget>[
-                    TextFormField(
-                      decoration: InputDecoration(labelText: "Lesson Title"),
-                      onSaved: (val) {
-                        recordingTitle = val;
-                      },
-                    ),
-                  ],
-                ),
+              ).show();
+            },
+            color: Colors.black12,
+            padding: EdgeInsets.all(8.0),
+            child: const Text(
+              "Submit Lesson",
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w300,
               ),
-            ).show();
-          },
-          color: Colors.blueGrey[400],
-          padding: EdgeInsets.all(8.0),
-          child: const Text(
-            "Submit Lesson",
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w300,
             ),
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
           ),
         ),
         SizedBox(
           height: 10,
-        ),
-        FlatButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          color: Colors.blueGrey[400],
-          padding: EdgeInsets.all(8.0),
-          child: const Text(
-            "Record Lesson Again",
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w300,
-            ),
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
         ),
       ],
     );
@@ -260,10 +269,18 @@ class _TestRecordState extends State<TestRecord> with TickerProviderStateMixin {
       _formKey.currentState.save();
     }
     try {
-      FirebaseService().recordingUpload(
-          file: File(recordFilePath),
-          topic: widget.topic,
-          title: recordingTitle);
+      if (isPrivate) {
+         FirebaseService().privateUpload(
+            file: File(recordFilePath),
+            topic: widget.topic,
+            title: recordingTitle);
+
+      } else {
+        FirebaseService().publicUpload(
+            file: File(recordFilePath),
+            topic: widget.topic,
+            title: recordingTitle);
+      }
     } on PlatformException catch (err) {
       // Platform Exception throws a Firebase Error =>  "platform"
 
@@ -387,9 +404,23 @@ class _TestRecordState extends State<TestRecord> with TickerProviderStateMixin {
           ),
         ),
         child: Padding(
-          padding: EdgeInsets.only(top: 40.0),
+          padding: EdgeInsets.only(top: 10.0),
           child: ListView(
             children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  IconButton(
+                      icon: Icon(
+                        Icons.cancel,
+                        color: Colors.white30,
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      }),
+                  Container(),
+                ],
+              ),
               Text(
                 widget.topic,
                 style: TextStyle(fontSize: 30.0, color: Colors.white),
