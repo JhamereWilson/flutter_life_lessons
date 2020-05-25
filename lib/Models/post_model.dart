@@ -7,7 +7,7 @@ import 'package:firebase_flutter_life/Data/user_repository.dart';
 import 'package:firebase_flutter_life/Models/models.dart';
 import 'package:firebase_flutter_life/Services/audio_service.dart';
 import 'package:firebase_flutter_life/UI/screens/home_screen.dart';
-import 'package:firebase_flutter_life/UI/screens/user_profile_screen.dart';
+import 'package:firebase_flutter_life/UI/screens/user_profile_screens/user_profile_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -178,10 +178,31 @@ class _PostState extends State<Post> {
           margin: EdgeInsets.fromLTRB(20, 6, 20, 0),
           child: ListTile(
             leading: buildPostHeader(),
-            title: Text(title),
+            title: Row(
+              children: <Widget>[
+                Text(
+                  topic,
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                Text(
+                  title,
+                  style: TextStyle(fontWeight: FontWeight.w300, fontSize: 13),
+                )
+              ],
+            ),
             subtitle: GestureDetector(
-              onTap: () {user.userID != userID? showProfile(context, userID) : print("this is your profile");},
-              child: Text(username),
+              onTap: () {
+                user.userID != userID
+                    ? showProfile(context, userID)
+                    : print("this is your profile");
+              },
+              child: Text(
+                username,
+                style: TextStyle(fontWeight: FontWeight.w200, fontSize: 14),
+              ),
             ),
             trailing: GestureDetector(
               onTap: handleLikePost,

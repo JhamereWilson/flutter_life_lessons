@@ -110,8 +110,23 @@ class _PrivatePostState extends State<PrivatePost> {
           margin: EdgeInsets.fromLTRB(20, 6, 20, 0),
           child: ListTile(
             leading: buildPostHeader(),
-            title: Text(title),
-            subtitle: Text(username),
+            title: Row(
+              children: <Widget>[
+                Text(
+                  topic,
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                Text(
+                  title,
+                  style: TextStyle(fontWeight: FontWeight.w300, fontSize: 13),
+                )
+              ],
+            ),
+            subtitle: Text(username,
+                style: TextStyle(fontWeight: FontWeight.w200, fontSize: 14)),
           ),
         ),
       ),

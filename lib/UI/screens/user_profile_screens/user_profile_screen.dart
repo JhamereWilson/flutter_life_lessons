@@ -6,6 +6,7 @@ import 'package:firebase_flutter_life/Data/user_repository.dart';
 import 'package:firebase_flutter_life/Models/models.dart';
 import 'package:firebase_flutter_life/Pickers/user_image_picker.dart';
 import 'package:firebase_flutter_life/UI/screens/settings_screen.dart';
+import 'package:firebase_flutter_life/UI/screens/user_profile_screens/user_book_tab.dart';
 
 import 'package:firebase_flutter_life/UI/widgets/book_tab.dart';
 import 'package:flutter/material.dart';
@@ -22,36 +23,56 @@ class UserProfileScreen extends StatefulWidget {
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
-  final followersRef = Firestore.instance.collection('followers');
-  final followingRef = Firestore.instance.collection('following');
+  final audienceRef = Firestore.instance.collection('audience');
+  final classmatesRef = Firestore.instance.collection('classmates');
 
-  bool isFollowing = false;
+  bool acessGranted = false;
   bool isLoading = false;
 
-  checkIfFollowing() async {
+  checkIfAcessGranted() async {
     var currentUser = await FirebaseAuth.instance.currentUser();
     String currentUserId = currentUser.uid;
-    DocumentSnapshot doc = await followersRef
-        .document(widget.profileID)
-        .collection('userFollowers')
+    DocumentSnapshot doc = await audienceRef
         .document(currentUserId)
+        .collection('followers')
+        .document(widget.profileID)
         .get();
     setState(() {
-      isFollowing = doc.exists;
+      acessGranted = doc.exists;
     });
   }
 
-  handleUnfollowUser() async {
+    handleAcessGranted() async {
     var currentUser = await FirebaseAuth.instance.currentUser();
     String currentUserId = currentUser.uid;
     setState(() {
-      isFollowing = false;
+      acessGranted = true;
+    });
+    // Make user follower of auth user (update your following collection)
+    audienceRef
+        .document(currentUserId)
+        .collection('followers')
+        .document(widget.profileID)
+        .setData({});
+    // Put THAT user on YOUR following collection (update your following collection)
+    classmatesRef
+        .document(widget.profileID)
+        .collection('following')
+        .document(currentUserId)
+        .setData({});
+  }
+
+  handleRemoveAcess() async {
+    var currentUser = await FirebaseAuth.instance.currentUser();
+    String currentUserId = currentUser.uid;
+    setState(() {
+      acessGranted = false;
     });
     // remove follower
-    followersRef
-        .document(widget.profileID)
-        .collection('userFollowers')
+    audienceRef
         .document(currentUserId)
+        .collection('followers')
+        .document(widget.profileID)
         .get()
         .then((doc) {
       if (doc.exists) {
@@ -59,10 +80,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       }
     });
     // remove following
-    followingRef
-        .document(currentUserId)
-        .collection('userFollowing')
+    classmatesRef
         .document(widget.profileID)
+        .collection('following')
+        .document(currentUserId)
         .get()
         .then((doc) {
       if (doc.exists) {
@@ -100,38 +121,20 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   buildProfileButton() {
-    if (isFollowing) {
+    if (acessGranted) {
       return buildButton(
         text: "Block From Private Book",
-        function: handleUnfollowUser,
+        function: handleRemoveAcess,
       );
-    } else if (!isFollowing) {
+    } else if (!acessGranted) {
       return buildButton(
         text: "Give Private Book Access",
-        function: handleFollowUser,
+        function: handleAcessGranted,
       );
     }
   }
 
-  handleFollowUser() async {
-    var currentUser = await FirebaseAuth.instance.currentUser();
-    String currentUserId = currentUser.uid;
-    setState(() {
-      isFollowing = true;
-    });
-    // Make auth user follower of THAT user (update THEIR followers collection)
-    followersRef
-        .document(widget.profileID)
-        .collection('userFollowers')
-        .document(currentUserId)
-        .setData({});
-    // Put THAT user on YOUR following collection (update your following collection)
-    followingRef
-        .document(currentUserId)
-        .collection('userFollowing')
-        .document(widget.profileID)
-        .setData({});
-  }
+
 
   buildProfileHeader() {
     return FutureBuilder(
@@ -316,7 +319,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   toggleBookView() {
-    return ToggleLessonView();
+    return UserToggleLessonView(currentUserID: widget.profileID,);
   }
 
   buildProfileScreen() {

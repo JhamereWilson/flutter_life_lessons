@@ -120,6 +120,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     onPressed: () async {
                       // if (_formKey.currentState.validate()) {
                       _trySubmit();
+                      Navigator.pushNamed(context, '/root');
                     },
                     child: Text("Register"),
                   ),
