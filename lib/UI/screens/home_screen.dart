@@ -1,9 +1,7 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_flutter_life/Data/user_repository.dart';
 import 'package:firebase_flutter_life/Models/models.dart';
-
 
 import 'package:firebase_flutter_life/UI/screens/screens.dart';
 
@@ -15,35 +13,24 @@ import 'profile_screens/profile_screen.dart';
 import 'record_screens/record_begin_screen.dart';
 import 'topic_screens/topics_screen.dart';
 
-
-
-
-
 User currentUser;
 
 class HomeScreen extends StatefulWidget {
-  
-
-
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   static String routeName = '/root';
-  
- 
-  
+  final globalKey = GlobalKey<ScaffoldState>();
+
   PageController pageController;
   int pageIndex = 0;
-  
 
   @override
   void initState() {
     super.initState();
     pageController = PageController();
-  
   }
 
   @override
@@ -66,10 +53,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
-     final user = Provider.of<User>(context);
+    final user = Provider.of<User>(context);
 
     return Scaffold(
       body: PageView(

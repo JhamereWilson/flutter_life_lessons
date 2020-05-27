@@ -198,23 +198,9 @@ class _TestRecordState extends State<TestRecord> with TickerProviderStateMixin {
                     ),
                     onPressed: () {
                       _trySubmit();
-                     Navigator.pushReplacementNamed(context, "/root");
-                      index = random.nextInt(4);
-                      final snackBar = SnackBar(
-                        content: Text(
-                          ('That was ${entries[index]} 🤗'),
-                          // style: kTitleTextStyle,
-                          textAlign: TextAlign.center,
-                        ),
-//            action: SnackBarAction(
-//              label: 'Undo',
-//              onPressed: () {
-//                // Some code to undo the recording.
-//              },
-//            ),
-                      );
-
-                      Scaffold.of(context).showSnackBar(snackBar);
+                      
+                      Navigator.pushNamedAndRemoveUntil(context, "/root", (route)=>false);
+                      
                     },
                     gradient: LinearGradient(
                       colors: <Color>[
@@ -271,11 +257,10 @@ class _TestRecordState extends State<TestRecord> with TickerProviderStateMixin {
     }
     try {
       if (isPrivate) {
-         FirebaseService().privateUpload(
+        FirebaseService().privateUpload(
             file: File(recordFilePath),
             topic: widget.topic,
             title: recordingTitle);
-
       } else {
         FirebaseService().publicUpload(
             file: File(recordFilePath),
@@ -330,7 +315,7 @@ class _TestRecordState extends State<TestRecord> with TickerProviderStateMixin {
             child: FlatButton(
               onPressed: () {
                 startRecord();
-                audioPlayer.play("assets/sounds/ping.mp3", isLocal: true);
+                //pingSound();
               },
               padding: EdgeInsets.all(8.0),
               child: Icon(
@@ -354,6 +339,16 @@ class _TestRecordState extends State<TestRecord> with TickerProviderStateMixin {
         ),
       ],
     );
+  }
+
+  Future pingSound() async {
+    final file = new File('${(await getTemporaryDirectory()).path}/music.mp3');
+    await file.writeAsBytes((await loadAsset()).buffer.asUint8List());
+    final result = await audioPlayer.play(file.path, isLocal: true);
+  }
+
+  Future<ByteData> loadAsset() async {
+    return await rootBundle.load("assets/sounds/ping.mp3");
   }
 
   Widget stopButton() {
@@ -390,6 +385,19 @@ class _TestRecordState extends State<TestRecord> with TickerProviderStateMixin {
         ),
       ],
     );
+  }
+
+  displaySnackbar(BuildContext ctx) {
+    index = random.nextInt(4);
+    final snackBar = SnackBar(
+      content: Text(
+        ('That was ${entries[index]} 🤗'),
+        // style: kTitleTextStyle,
+        textAlign: TextAlign.center,
+      ),
+    );
+
+    Scaffold.of(ctx).showSnackBar(snackBar);
   }
 
   buildRecordScreen() {
@@ -448,6 +456,9 @@ class _TestRecordState extends State<TestRecord> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return buildRecordScreen();
+    return Scaffold(
+      body: buildRecordScreen(),
+    );
+  
   }
 }
