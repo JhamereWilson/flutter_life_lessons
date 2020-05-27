@@ -330,6 +330,7 @@ class _TestRecordState extends State<TestRecord> with TickerProviderStateMixin {
             child: FlatButton(
               onPressed: () {
                 startRecord();
+                audioPlayer.play("assets/sounds/ping.mp3", isLocal: true);
               },
               padding: EdgeInsets.all(8.0),
               child: Icon(

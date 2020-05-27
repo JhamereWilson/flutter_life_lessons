@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_flutter_life/Models/models.dart';
 import 'package:firebase_flutter_life/Services/auth_service.dart';
+import 'package:firebase_flutter_life/UI/screens/report_bug_screen.dart';
 import 'package:firebase_flutter_life/UI/screens/topic_screens/archived_topics.dart';
 import 'package:firebase_flutter_life/wrapper.dart';
 
@@ -33,6 +34,7 @@ class App extends StatelessWidget {
           '/login-screen': (context) => LoginScreen(),
           '/register-screen': (context) => RegisterScreen(),
           '/archived': (context) => ArchivedTopicsScreen(),
+          '/bugs': (context) => BugsOrFeatures(),
         },
       ),
     );
